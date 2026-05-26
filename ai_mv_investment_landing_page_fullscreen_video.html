@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI MV Studio｜AI 音樂影像招商平台</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Noto Sans TC', sans-serif;
+      background: #000;
+      color: #fff;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      position: relative;
+    }
+
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -3;
+      background: #000;
+    }
+
+    .video-background iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 177.77777778vh;
+      height: 56.25vw;
+      min-width: 100vw;
+      min-height: 100vh;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border: none;
+      filter: brightness(0.45) contrast(1.05);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.82)),
+        radial-gradient(circle at top right, rgba(0,255,204,0.15), transparent 35%),
+        radial-gradient(circle at bottom left, rgba(255,0,170,0.15), transparent 30%);
+      z-index: -2;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+      opacity: 0.12;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 24px 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 99;
+      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,0.18);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.82);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    .hero {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 7vw;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 960px;
+      text-align: center;
+      animation: fadeUp 1.2s ease forwards;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 7rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -3px;
+      margin-bottom: 26px;
+      text-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #ffffff 0%, #8ef6ff 40%, #ff93d0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.8);
+      max-width: 760px;
+      margin: 0 auto 42px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 16px 34px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: all 0.35s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #00d4ff, #ff3cac);
+      color: #fff;
+      box-shadow: 0 15px 45px rgba(255, 60, 172, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 22px 60px rgba(255, 60, 172, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.14);
+    }
+
+    .stats-section {
+      padding: 120px 7vw;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 28px;
+    }
+
+    .stat-card {
+      padding: 42px 36px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      transition: 0.4s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      background: linear-gradient(90deg, #8ef6ff, #ff93d0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+    }
+
+    .section {
+      padding: 120px 7vw;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 70px;
+    }
+
+    .section-title span {
+      color: #8ef6ff;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2.3rem, 5vw, 4.8rem);
+      margin-top: 16px;
+      line-height: 1.1;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .service-card {
+      padding: 40px;
+      border-radius: 32px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      transition: 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(0,212,255,0.18), transparent 70%);
+    }
+
+    .service-card:hover {
+      transform: translateY(-12px);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .service-number {
+      font-size: 4rem;
+      font-weight: 900;
+      opacity: 0.08;
+      position: absolute;
+      right: 24px;
+      top: 10px;
+    }
+
+    .service-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .service-card p {
+      color: rgba(255,255,255,0.75);
+      line-height: 1.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-section {
+      padding: 140px 7vw;
+      text-align: center;
+    }
+
+    .cta-box {
+      padding: 80px 40px;
+      border-radius: 40px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,0,170,0.12), transparent 50%);
+      pointer-events: none;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .cta-box p {
+      max-width: 780px;
+      margin: 0 auto 40px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.9;
+      font-size: 1.05rem;
+    }
+
+    footer {
+      padding: 40px 7vw 70px;
+      text-align: center;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.95rem;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 18px 6vw;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 120px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1px;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .section,
+      .stats-section,
+      .cta-section {
+        padding: 90px 6vw;
+      }
+
+      .cta-box {
+        padding: 60px 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-background">
+    <iframe
+      src="https://www.youtube.com/embed/LwLXRVJvMN0?autoplay=1&mute=1&controls=0&loop=1&playlist=LwLXRVJvMN0&showinfo=0&modestbranding=1&rel=0"
+      title="AI MV Background"
+      allow="autoplay; fullscreen"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="overlay"></div>
+  <div class="noise"></div>
+
+  <nav>
+    <div class="logo">AI MV STUDIO</div>
+
+    <div class="nav-links">
+      <a href="#about">關於平台</a>
+      <a href="#services">AI MV 服務</a>
+      <a href="#invest">招商合作</a>
+      <a href="#contact">聯絡我們</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+
+      <div class="tag">
+        NEXT GENERATION AI MUSIC VIDEO PLATFORM
+      </div>
+
+      <h1>
+        打造下一個<br>
+        <span class="gradient-text">AI MV 影像商業宇宙</span>
+      </h1>
+
+      <p>
+        結合 AI 生成影像、音樂視覺設計、品牌敘事與短影音行銷，
+        我們正在打造新世代 AI MV 製作平台。
+        從商業品牌、藝人宣傳到社群短影音內容，全面開啟 AI 影像商業化浪潮。
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#invest" class="btn btn-primary">立即招商合作</a>
+        <a href="#services" class="btn btn-secondary">觀看服務內容</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-number">10X</div>
+        <div class="stat-label">
+          AI MV 製作效率提升，快速生成高質感影像內容。
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">24H</div>
+        <div class="stat-label">
+          可快速產出 AI MV、品牌短影音與社群視覺內容。
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">
+          AI 視覺風格無限擴展，創造全球化內容市場。
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">2026</div>
+        <div class="stat-label">
+          全面進軍 AI 音樂影像與品牌娛樂內容商業模式。
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" id="services">
+
+    <div class="section-title">
+      <span>AI MV SOLUTIONS</span>
+      <h2>高端 AI 音樂影像製作服務</h2>
+    </div>
+
+    <div class="service-grid">
+
+      <div class="service-card">
+        <div class="service-number">01</div>
+        <h3>AI MV 製作</h3>
+        <p>
+          透過 AI 生成技術打造電影級 MV 視覺，融合未來感、藝術性與品牌敘事，快速完成高品質影像內容。
+        </p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-number">02</div>
+        <h3>品牌短影音內容</h3>
+        <p>
+          提供品牌社群短影音、產品形象影片與數位廣告內容，建立高辨識度的 AI 視覺品牌風格。
+        </p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-number">03</div>
+        <h3>AI 虛擬藝人</h3>
+        <p>
+          建立 AI 虛擬偶像與數位 IP，延伸直播、MV、社群娛樂與品牌聯名合作等商業模式。
+        </p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-number">04</div>
+        <h3>招商與內容聯盟</h3>
+        <p>
+          邀請品牌、投資方與創作者共同打造 AI 音樂娛樂生態系，創造新世代內容商業機會。
+        </p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-number">05</div>
+        <h3>全球社群行銷</h3>
+        <p>
+          結合 TikTok、Instagram、YouTube Shorts 等短影音平台，打造全球化 AI 視覺流量。
+        </p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-number">06</div>
+        <h3>未來娛樂科技</h3>
+        <p>
+          整合 AI 視覺生成、互動娛樂、數位品牌與沉浸式內容，建構下一代娛樂科技平台。
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="cta-section" id="invest">
+    <div class="cta-box">
+
+      <h2>
+        加入 AI MV<br>
+        下一波內容革命
+      </h2>
+
+      <p>
+        我們正在尋找品牌合作夥伴、內容創作者、投資方與娛樂產業團隊，
+        一同建立全球化 AI 音樂影像市場。
+        現在，就是進入 AI 娛樂商業時代的最佳時機。
+      </p>
+
+      <a href="#contact" class="btn btn-primary">立即預約合作</a>
+
+    </div>
+  </section>
+
+  <footer id="contact">
+    © 2026 AI MV STUDIO — Future Visual Entertainment Platform
+  </footer>
+
+</body>
+</html>
